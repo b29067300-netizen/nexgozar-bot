@@ -2,8 +2,8 @@ name: Auto Fetch and Post Configs
 
 on:
   schedule:
-    - cron: '*/5 * * * *' # هر ۵ دقیقه گیت‌هاب بیدار می‌شود
-  workflow_dispatch: # دکمه اجرای دستی
+    - cron: '*/15 * * * *' # 👈 تنظیم شد روی هر ۱۵ دقیقه برای اجرای منظم‌تر و پایدارتر
+  workflow_dispatch:
 
 jobs:
   run-bot:
@@ -20,7 +20,7 @@ jobs:
     - name: Install Dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -r requirements.txt
+        pip install requests pytz
 
     - name: Run Script
       env:

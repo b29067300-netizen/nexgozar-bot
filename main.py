@@ -169,7 +169,9 @@ def send_to_telegram(config_data, host=None):
     title = random.choice(TITLE_VARIATIONS)
     random_speed = random.choice(SPEED_VARIATIONS)
     random_support = random.choice(SUPPORT_VARIATIONS)
-    dynamic_hashtags = f"#کانفیگ_رایگان #v2ray #{proto.lower()}"
+    
+    # 🏷 ساخت هشتگ‌های درخواستی شما به همراه پروتکل خودکار
+    dynamic_hashtags = f"#کانفیگ_رایگان #ویتوری #v2ray #فیلترشکن #پروکسی #{proto.lower()}"
     
     text = (
         f"<blockquote>{title}</blockquote>\n"

@@ -167,7 +167,6 @@ def send_to_telegram(config_data, host=None, ping_ms=0):
     title = random.choice(TITLE_VARIATIONS)
     random_support = random.choice(SUPPORT_VARIATIONS)
     
-    # ⏱ گرفتن ساعت دقیق ایران به صورت زنده
     tehran_tz = pytz.timezone('Asia/Tehran')
     current_time = datetime.now(tehran_tz).strftime("%H:%M")
     

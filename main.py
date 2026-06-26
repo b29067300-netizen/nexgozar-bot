@@ -175,7 +175,7 @@ def send_to_telegram(config_data, host=None):
         f"<blockquote>{title}</blockquote>\n"
         f"<blockquote>📍 لوکیشن: {real_location}</blockquote>\n"
         f"<blockquote>🔐 پروتکل: {proto}</blockquote>\n"
-        f"<blockquote>📊 وضعیت: {random_speed}</blockquote>\n'
+        f"<blockquote>📊 وضعیت: {random_speed}</blockquote>\n"
         f"<blockquote>⚡️ سرعت اتصال : 🛸 تست شده و پایدار</blockquote>\n\n"
         f"{config_text}\n\n"
         f"<blockquote>{random_support}</blockquote>\n"

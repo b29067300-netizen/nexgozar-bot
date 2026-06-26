@@ -13,6 +13,7 @@ CHANNEL_ID = os.getenv("CHANNEL_ID", "@NexGozar")
 HISTORY_FILE = "history.txt"
 MAX_HISTORY_LINES = 1000
 
+# 🌐 لیست سورس‌های فعال و پرسرعت
 SOURCES = [
     "https://raw.githubusercontent.com/yebekhe/TVC/main/subscriptions/vless/base64",
     "https://raw.githubusercontent.com/mahdibland/V2RayAggregator/master/sub/sub_merge.txt",
@@ -24,35 +25,24 @@ SOURCES = [
     "https://raw.githubusercontent.com/shif6/v2ray-configs/main/All_Configs_Sub.txt",
     "https://raw.githubusercontent.com/SamanGhaffarzadeh/V2ray-Configs/main/All_Configs_Sub.txt",
     "https://raw.githubusercontent.com/mftf0/V2ray-Configs/main/All_Configs_Sub.txt",
-    "https://raw.githubusercontent.com/vfarid/v2ray-auto-config/master/v2ray-sub-with-vless.txt",
-    "https://raw.githubusercontent.com/2dust/v2rayN/master/v2rayN/Subscribes.txt",
-    "https://raw.githubusercontent.com/Borders-Freedom/v2ray/master/Subscribes.txt"
+    "https://raw.githubusercontent.com/vfarid/v2ray-auto-config/master/v2ray-sub-with-vless.txt"
 ]
 
 TITLE_VARIATIONS = [
     "🔥 کانفیگ جدید رسید!", "⚡️ اتصال جدید برقرار شد", "🚀 سرور پرسرعت اختصاصی",
     "🛸 شکار جدید از سرورهای زنده", "🛡 فیلترشکن دور‌زننده محدودیت", "💎 کانفیگ تست‌شده و پایدار",
     "🎯 دسترسی بدون سانسور و روان", "👑 سرور VIP و خط اختصاصی", "✨ فرکانس جدید اتصال آزاد",
-    "🔮 کانفیگ بدون قطعی و پرقدرت", "🛰 اتصال مستقیم به شبکه جهانی", "🔋 بمب انرژی برای اینترنت شما",
-    "🌪 عبور رعدآسا از سد فیلترینگ", "🔑 کلید طلایی اینترنت آزاد", "💻 سرور ارتقا یافته و بهینه",
-    "🏹 شلیک مستقیم به محدودیت‌ها", "🌌 اتصال پرسرعت کهکشانی", "⚙ کانفیگ کاستوم و دست‌چین شده",
-    "🧨 انفجار سرعت در شبکه", "💡 میانبر هوشمند اینترنت بدون فیلتر"
+    "🔮 کانفیگ بدون قطعی و پرقدرت"
 ]
 
 SPEED_VARIATIONS = [
     "🚀 فوق‌العاده پرسرعت و روان", "🔥 عالی و بدون افت کیفیت", "⚡️ مناسب اینستاگرام و یوتیوب",
-    "🎮 پینگ پایین مخصوص گیم و وبگردی", "🛸 تست شده و کاملاً پایدار", "💎 پهنای باند اختصاصی و بی‌نظیر",
-    "🛸 آپ‌تایم بالا بدون قطعی", "📈 لود سریع ویدیوهای 4K", "🌪 سرعت موشکی روی تمام اپراتورها",
-    "🧬 کانکشن پایدار با پاسخ‌دهی سریع", "🎯 پینگ عالی برای بازی‌های آنلاین", "🔋 کم‌مصرف و فوق‌العاده بهینه",
-    "⚡️ گذر پرسرعت از افت سرعت شبانه", "🛡 مجهز به تانلینگ پرقدرت", "💎 کیفیت تضمین‌شده و VIP",
-    "🚀 اتصال آنی در کمتر از ۳ ثانیه", "🌌 بدون افت پینگ در ساعات شلوغی", "💥 قدرت واقعی دانلود و استریم",
-    "🛸 تست شده با آخرین متد روز", "🔥 پایداری فوق‌العاده در شبکه"
+    "🎮 پینگ پایین مخصوص گیم و وبگردی", "🛸 تست شده و کاملاً پایدار"
 ]
 
 SUPPORT_VARIATIONS = [
     "❤️ وصل شدی حمایت یادت نره", "✨ با دوستانت به اشتراک بگذار",
-    "🚀 حمایت شما باعث انرژی ماست", "💎 فوروارد برای دوستان واجب",
-    "💥 لایک و حمایت یادت نره رفیق"
+    "🚀 حمایت شما باعث انرژی ماست"
 ]
 
 def load_history():
@@ -101,10 +91,8 @@ def check_live_ping(host, port):
     if not host or not port:
         return False
     try:
-        ip = socket.gethostbyname(host)
-        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        s.settimeout(2.0)
-        s.connect((ip, port))
+        # تست پینگ سریع و بهینه شده برای گیت‌هاب اکشنز
+        s = socket.create_connection((host, port), timeout=1.5)
         s.close()
         return True
     except:
@@ -112,12 +100,11 @@ def check_live_ping(host, port):
 
 def get_server_location(host):
     if not host:
-        return "🌐 نامشخص"
+        return "🌐 Global"
     try:
-        ip = socket.gethostbyname(host)
-        response = requests.get(f"http://ip-api.com/json/{ip}", timeout=4).json()
+        response = requests.get(f"http://ip-api.com/json/{host}", timeout=2).json()
         if response.get("status") == "success":
-            country_name = response.get("country", "Unknown")
+            country_name = response.get("country", "Global")
             country_code = response.get("countryCode", "")
             if country_code:
                 flag_emoji = "".join(chr(127397 + ord(c)) for c in country_code.upper())
@@ -125,12 +112,11 @@ def get_server_location(host):
             return f"🌐 {country_name}"
     except:
         pass
-    return "🌐 نامشخص"
+    return "🌐 Global"
 
 def rename_config(config, new_name):
     try:
         config = config.strip()
-        config = re.sub(r'\s+', '', config)
         if config.startswith("vmess://"):
             b64_data = config.replace("vmess://", "")
             b64_data += "=" * ((4 - len(b64_data) % 4) % 4)
@@ -155,9 +141,11 @@ def fetch_configs():
     shuffled_sources = SOURCES.copy()
     random.shuffle(shuffled_sources)
     
-    for url in shuffled_sources:
+    # فقط ۳ سورس رندوم در هر پارت چک می‌شود تا سرعت دانلود فضایی بالا برود
+    for url in shuffled_sources[:3]:
         try:
-            response = requests.get(url, timeout=3)
+            print(f"Fetching from: {url}")
+            response = requests.get(url, timeout=2.5)
             if response.status_code == 200:
                 text_content = response.text
                 if "://" not in text_content and len(text_content.strip()) > 20:
@@ -170,8 +158,8 @@ def fetch_configs():
                     config_base = match.split("#")[0]
                     if config_base not in history:
                         all_configs.append(match)
-        except Exception as e:
-            print(f"سورس ناموفق یا کند بود. خطا: {e}")
+        except:
+            print("سورس کند بود، رد شد.")
             
     return list(set(all_configs))
 
@@ -181,10 +169,9 @@ def send_to_telegram(config_data, host=None):
     proto = get_protocol(config_data)
     config_text = f"<code>{config_data}</code>"
     title = random.choice(TITLE_VARIATIONS)
-        
     random_speed = random.choice(SPEED_VARIATIONS)
     random_support = random.choice(SUPPORT_VARIATIONS)
-    dynamic_hashtags = f"#کانفیگ_رایگان #ویتوری #v2ray #فیلترشکن #{proto.lower()}"
+    dynamic_hashtags = f"#کانفیگ_رایگان #v2ray #{proto.lower()}"
     
     text = (
         f"<blockquote>{title}</blockquote>\n"
@@ -199,16 +186,18 @@ def send_to_telegram(config_data, host=None):
     
     payload = {"chat_id": CHANNEL_ID, "text": text, "parse_mode": "HTML"}
     try:
-        res = requests.post(url, json=payload, timeout=10)
+        res = requests.post(url, json=payload, timeout=5)
         if res.status_code == 200:
+            print("ارسال به تلگرام موفقیت‌آمیز بود.")
             save_to_history(config_data.split("#")[0])
         else:
-            print(f"Telegram error: {res.text}")
+            print(f"خطای تلگرام: {res.text}")
     except Exception as e:
-        print(f"Error sending to Telegram: {e}")
+        print(f"خطا در ارسال: {e}")
 
 def run_one_cycle():
     configs = fetch_configs()
+    print(f"تعداد جدیدها: {len(configs)}")
     if configs:
         config_name = "NexGozar"
         live_configs = []
@@ -219,23 +208,19 @@ def run_one_cycle():
                 if check_live_ping(host, port):
                     renamed = rename_config(cfg, config_name)
                     live_configs.append((renamed, host))
-                    if len(live_configs) >= 2:
+                    if len(live_configs) >= 1:  # در هر دقیقه ۱ کانفیگ داغ و زنده کافی است
                         break
         
         if live_configs:
-            for index, (cfg, host_ip) in enumerate(live_configs):
+            for cfg, host_ip in live_configs:
                 send_to_telegram(cfg, host=host_ip)
-                if index < len(live_configs) - 1:
-                    time.sleep(5)
         else:
-            print("کانفیگ جدید زنده یافت نشد.")
-    else:
-        print("هیچ کانفیگ جدیدی در منابع نبود.")
+            print("کانفیگ زنده جدیدی یافت نشد.")
 
 if __name__ == "__main__":
-    for i in range(5):
-        print(f"--- شروع مانیتورینگ زنده (دقیقه {i+1} از ۵) ---")
+    # اجرای سریع مانیتورینگ متوالی ۳ پارت با فاصله ۴۵ ثانیه
+    for i in range(3):
+        print(f"--- پارت {i+1} ---")
         run_one_cycle()
-        if i < 4:
-            print("انتظار برای دقیقه بعدی...")
-            time.sleep(60)
+        if i < 2:
+            time.sleep(45)

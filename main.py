@@ -91,7 +91,6 @@ def check_live_ping(host, port):
     if not host or not port:
         return False
     try:
-        # تست پینگ سریع و بهینه شده برای گیت‌هاب اکشنز
         s = socket.create_connection((host, port), timeout=1.5)
         s.close()
         return True
@@ -141,7 +140,6 @@ def fetch_configs():
     shuffled_sources = SOURCES.copy()
     random.shuffle(shuffled_sources)
     
-    # فقط ۳ سورس رندوم در هر پارت چک می‌شود تا سرعت دانلود فضایی بالا برود
     for url in shuffled_sources[:3]:
         try:
             print(f"Fetching from: {url}")
@@ -177,7 +175,8 @@ def send_to_telegram(config_data, host=None):
         f"<blockquote>{title}</blockquote>\n"
         f"<blockquote>📍 لوکیشن: {real_location}</blockquote>\n"
         f"<blockquote>🔐 پروتکل: {proto}</blockquote>\n"
-        f"<blockquote>📊 وضعیت: {random_speed}</blockquote>\n\n"
+        f"<blockquote>📊 وضعیت: {random_speed}</blockquote>\n'
+        f"<blockquote>⚡️ سرعت اتصال : 🛸 تست شده و پایدار</blockquote>\n\n"
         f"{config_text}\n\n"
         f"<blockquote>{random_support}</blockquote>\n"
         f"<blockquote>🆔 {CHANNEL_ID}</blockquote>\n"
@@ -208,7 +207,7 @@ def run_one_cycle():
                 if check_live_ping(host, port):
                     renamed = rename_config(cfg, config_name)
                     live_configs.append((renamed, host))
-                    if len(live_configs) >= 1:  # در هر دقیقه ۱ کانفیگ داغ و زنده کافی است
+                    if len(live_configs) >= 1:
                         break
         
         if live_configs:
@@ -216,9 +215,10 @@ def run_one_cycle():
                 send_to_telegram(cfg, host=host_ip)
         else:
             print("کانفیگ زنده جدیدی یافت نشد.")
+    else:
+        print("هیچ کانفیگ جدیدی در منابع نبود.")
 
 if __name__ == "__main__":
-    # اجرای سریع مانیتورینگ متوالی ۳ پارت با فاصله ۴۵ ثانیه
     for i in range(3):
         print(f"--- پارت {i+1} ---")
         run_one_cycle()

@@ -6,6 +6,8 @@ import time
 import socket
 import json
 import random
+from datetime import datetime
+import pytz
 
 TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
 CHANNEL_ID = os.getenv("CHANNEL_ID", "@NexGozar")
@@ -13,7 +15,6 @@ CHANNEL_ID = os.getenv("CHANNEL_ID", "@NexGozar")
 HISTORY_FILE = "history.txt"
 MAX_HISTORY_LINES = 1000
 
-# 🌐 لیست سورس‌های فعال و پرسرعت
 SOURCES = [
     "https://raw.githubusercontent.com/yebekhe/TVC/main/subscriptions/vless/base64",
     "https://raw.githubusercontent.com/mahdibland/V2RayAggregator/master/sub/sub_merge.txt",
@@ -33,11 +34,6 @@ TITLE_VARIATIONS = [
     "🛸 شکار جدید از سرورهای زنده", "🛡 فیلترشکن دور‌زننده محدودیت", "💎 کانفیگ تست‌شده و پایدار",
     "🎯 دسترسی بدون سانسور و روان", "👑 سرور VIP و خط اختصاصی", "✨ فرکانس جدید اتصال آزاد",
     "🔮 کانفیگ بدون قطعی و پرقدرت"
-]
-
-SPEED_VARIATIONS = [
-    "🚀 فوق‌العاده پرسرعت و روان", "🔥 عالی و بدون افت کیفیت", "⚡️ مناسب اینستاگرام و یوتیوب",
-    "🎮 پینگ پایین مخصوص گیم و وبگردی", "🛸 تست شده و کاملاً پایدار"
 ]
 
 SUPPORT_VARIATIONS = [
@@ -89,13 +85,15 @@ def extract_host_and_port(config):
 
 def check_live_ping(host, port):
     if not host or not port:
-        return False
+        return False, 0
     try:
+        start_time = time.time()
         s = socket.create_connection((host, port), timeout=1.5)
         s.close()
-        return True
+        ping_ms = int((time.time() - start_time) * 1000)
+        return True, ping_ms
     except:
-        return False
+        return False, 0
 
 def get_server_location(host):
     if not host:
@@ -161,24 +159,26 @@ def fetch_configs():
             
     return list(set(all_configs))
 
-def send_to_telegram(config_data, host=None):
+def send_to_telegram(config_data, host=None, ping_ms=0):
     url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage"
     real_location = get_server_location(host)
     proto = get_protocol(config_data)
     config_text = f"<code>{config_data}</code>"
     title = random.choice(TITLE_VARIATIONS)
-    random_speed = random.choice(SPEED_VARIATIONS)
     random_support = random.choice(SUPPORT_VARIATIONS)
     
-    # 🏷 ساخت هشتگ‌های درخواستی شما به همراه پروتکل خودکار
+    # ⏱ گرفتن ساعت دقیق ایران به صورت زنده
+    tehran_tz = pytz.timezone('Asia/Tehran')
+    current_time = datetime.now(tehran_tz).strftime("%H:%M")
+    
     dynamic_hashtags = f"#کانفیگ_رایگان #ویتوری #v2ray #فیلترشکن #پروکسی #{proto.lower()}"
     
     text = (
         f"<blockquote>{title}</blockquote>\n"
         f"<blockquote>📍 لوکیشن: {real_location}</blockquote>\n"
         f"<blockquote>🔐 پروتکل: {proto}</blockquote>\n"
-        f"<blockquote>📊 وضعیت: {random_speed}</blockquote>\n"
-        f"<blockquote>⚡️ سرعت اتصال : 🛸 تست شده و پایدار</blockquote>\n\n"
+        f"<blockquote>⚡️ وضعیت: 🟢 ۱۰۰٪ زنده (تست شده در {current_time})</blockquote>\n"
+        f"<blockquote>📊 تأخیر سرور: ⚡️ {ping_ms} میلی‌ثانیه (عالی)</blockquote>\n\n"
         f"{config_text}\n\n"
         f"<blockquote>{random_support}</blockquote>\n"
         f"<blockquote>🆔 {CHANNEL_ID}</blockquote>\n"
@@ -206,15 +206,16 @@ def run_one_cycle():
         for cfg in configs:
             host, port = extract_host_and_port(cfg)
             if host and port:
-                if check_live_ping(host, port):
+                is_live, ping_ms = check_live_ping(host, port)
+                if is_live:
                     renamed = rename_config(cfg, config_name)
-                    live_configs.append((renamed, host))
+                    live_configs.append((renamed, host, ping_ms))
                     if len(live_configs) >= 1:
                         break
         
         if live_configs:
-            for cfg, host_ip in live_configs:
-                send_to_telegram(cfg, host=host_ip)
+            for cfg, host_ip, ping_ms in live_configs:
+                send_to_telegram(cfg, host=host_ip, ping_ms=ping_ms)
         else:
             print("کانفیگ زنده جدیدی یافت نشد.")
     else:
